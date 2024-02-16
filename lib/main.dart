@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -10,13 +11,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Trapp',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSwatch(
+            backgroundColor: Colors.white70,
+            primarySwatch: Colors.orange,
+            accentColor: Colors.lime,
+            errorColor: Colors.red),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Trapp home page'),
     );
   }
 }
@@ -31,41 +37,73 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  static final List<Widget> _widgets = <Widget>[
+    Column(
+      key: GlobalKey(),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          key: GlobalKey(),
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+        )
+      ],
+    ),
+    Column(
+      key: GlobalKey(),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [],
+    ),
+  ];
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context)
+        .colorScheme; // todo capisci diff tra const e final in flutter
     return Scaffold(
       appBar: AppBar(
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
         title: Text(widget.title),
+        elevation: 8,
+        shadowColor: colorScheme.secondary,
+      ),
+      bottomNavigationBar: NavigationBar(
+        backgroundColor: colorScheme.primary,
+        indicatorColor: Colors.black12,
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemSelected,
+        destinations: const <Widget>[
+          NavigationDestination(
+              selectedIcon: Icon(Icons.bar_chart),
+              icon: Icon(Icons.bar_chart_outlined),
+              label: "Stats"),
+          NavigationDestination(
+              selectedIcon: Icon(Icons.straighten),
+              icon: Icon(Icons.straighten_outlined),
+              label: "Rules"),
+        ],
+        elevation: 8,
+        shadowColor: colorScheme.primary,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+        child: _widgets.elementAt(_selectedIndex),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        backgroundColor: colorScheme.secondary,
+        onPressed: () {},
+        child: const Icon(
+          Icons.add,
+          size: 26,
+        ),
       ),
     );
+  }
+
+  void _onItemSelected(int idx) {
+    setState(() {
+      _selectedIndex = idx;
+    });
   }
 }
