@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:trapp/widget/add_rules_widget.dart';
 
 void main() {
   runApp(const MyApp());
@@ -90,14 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: _widgets.elementAt(_selectedIndex),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: colorScheme.secondary,
-        onPressed: () {},
-        child: const Icon(
-          Icons.add,
-          size: 26,
-        ),
-      ),
+      floatingActionButton: const AddRulesWidget(),
     );
   }
 
