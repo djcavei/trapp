@@ -1,0 +1,1 @@
+const appBarElevation = 8.0;

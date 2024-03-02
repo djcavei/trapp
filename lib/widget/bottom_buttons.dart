@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
-class AddRulesWidget extends StatefulWidget {
-  const AddRulesWidget({
+class BottomButtons extends StatefulWidget {
+  final VoidCallback openMonitorNewAppCallback;
+  const BottomButtons({
     super.key,
+    required this.openMonitorNewAppCallback
   });
 
   @override
-  State<StatefulWidget> createState() => _AddRulesWidgetState();
+  State<StatefulWidget> createState() => _BottomButtonsState();
 }
 
-class _AddRulesWidgetState extends State<AddRulesWidget> {
+class _BottomButtonsState extends State<BottomButtons> {
   bool _showOptions = false;
 
   @override
@@ -21,19 +23,29 @@ class _AddRulesWidgetState extends State<AddRulesWidget> {
         child: Positioned(
           right: 60,
           bottom: 60,
-          child: BasicAddButtons(colorScheme: colorScheme, text: 'Aggiungi nuova regola', onPressFunc: (){print('nuova regola');},),
+          child: BasicAddButtons(
+            colorScheme: colorScheme,
+            text: 'Aggiungi nuova regola',
+            onPressFunc: () {
+              print('nuova regola');
+            },
+          ), // todo non funziona
         ),
       ),
       Visibility(
         visible: _showOptions,
         child: Positioned(
           right: 60,
-          child: BasicAddButtons(colorScheme: colorScheme, text: 'Monitora nuova app', onPressFunc: () => print('nuova app'),),
+          child: BasicAddButtons(
+            colorScheme: colorScheme,
+            text: 'Monitora nuova app',
+            onPressFunc: /*widget.openMonitorNewAppCallback*/(){}
+          ), // todo non funziona
         ),
       ),
       FloatingActionButton(
         backgroundColor: colorScheme.secondary,
-        onPressed: () => setState(() => _showOptions = !_showOptions),
+        onPressed: widget.openMonitorNewAppCallback,// todo ripristina il codice seguente: () => setState(() => _showOptions = !_showOptions),
         child: const Icon(
           Icons.add,
           size: 26,
@@ -59,13 +71,11 @@ class BasicAddButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       style: ButtonStyle(
-        elevation: const MaterialStatePropertyAll(4),
+          elevation: const MaterialStatePropertyAll(4),
           shadowColor: MaterialStatePropertyAll(colorScheme.onTertiary),
           overlayColor: MaterialStatePropertyAll(Colors.black.withOpacity(0.5)),
-          backgroundColor:
-              MaterialStatePropertyAll(colorScheme.secondary),
-          foregroundColor:
-              MaterialStatePropertyAll(colorScheme.onSecondary)),
+          backgroundColor: MaterialStatePropertyAll(colorScheme.secondary),
+          foregroundColor: MaterialStatePropertyAll(colorScheme.onSecondary)),
       onPressed: onPressFunc,
       child: Text(text),
     );

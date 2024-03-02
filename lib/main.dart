@@ -1,6 +1,13 @@
+import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:trapp/widget/add_rules_widget.dart';
+import 'package:trapp/constants.dart';
+import 'package:trapp/widget/app_rules.dart';
+import 'package:trapp/widget/app_stats.dart';
+import 'package:trapp/widget/bottom_buttons.dart';
+import 'package:trapp/widget/add_new_app.dart';
+
+import 'functions/functions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,22 +46,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   static final List<Widget> _widgets = <Widget>[
-    Column(
-      key: GlobalKey(),
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          key: GlobalKey(),
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-        )
-      ],
-    ),
-    Column(
-      key: GlobalKey(),
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [],
-    ),
+    AppStats(key: GlobalKey()),
+    AppRules()
   ];
 
   int _selectedIndex = 0;
@@ -67,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.secondary,
         title: Text(widget.title),
-        elevation: 8,
+        elevation: appBarElevation,
         shadowColor: colorScheme.secondary,
       ),
       bottomNavigationBar: NavigationBar(
@@ -91,7 +84,8 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: _widgets.elementAt(_selectedIndex),
       ),
-      floatingActionButton: const AddRulesWidget(),
+      floatingActionButton: BottomButtons(
+          openMonitorNewAppCallback: () => _openMonitorNewApp(context)),
     );
   }
 
@@ -100,4 +94,33 @@ class _MyHomePageState extends State<MyHomePage> {
       _selectedIndex = idx;
     });
   }
+
+  void _openMonitorNewApp(BuildContext context) async {
+    final List<Application> appList = await DeviceApps.getInstalledApplications(
+        includeAppIcons: true); // todo non funziona
+    appList.sort(appNameComparator); // todo non mi piace
+    if (context.mounted) {
+      // todo capire xk è una bad practice
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AddNewApp(
+                  key: UniqueKey(),
+                  appList: appList,
+                  addNewAppCallback: (app) {
+                    getAppStatsWidgetState().addMonitoredApp(app);
+                    Navigator.pop(context);
+                  })));
+    }
+  }
+
+  AppStatsState getAppStatsWidgetState() {
+    return (_widgets.firstWhere((element) => element is AppStats).key
+            as GlobalKey)
+        .currentState! as AppStatsState;
+  }
+
+/*getAppRulesWidgetState() {
+    (_widgets.firstWhere((element) => element is AppRules).key as GlobalKey<AppRulesState>).currentState;
+  }*/
 }
