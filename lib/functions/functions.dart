@@ -11,3 +11,11 @@ getErrorBackground(BuildContext ctx) {
 getErrorForeground(BuildContext ctx) {
   return MaterialStatePropertyAll(Theme.of(ctx).colorScheme.onError);
 }
+
+getSurfaceBackground(BuildContext ctx) {
+  return MaterialStatePropertyAll(Theme.of(ctx).colorScheme.surfaceVariant.withOpacity(0.4));
+}
+
+getSurfaceForeground(BuildContext ctx) {
+  return MaterialStatePropertyAll(Theme.of(ctx).colorScheme.onSurfaceVariant.withOpacity(0.4));
+}

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:trapp/constants.dart';
 import 'package:trapp/functions/functions.dart';
 
+import '../common/buttons.dart';
+
 class AppStats extends StatefulWidget {
   const AppStats({super.key});
 
@@ -15,7 +17,6 @@ class AppStatsState extends State<AppStats> {
 
   @override
   Widget build(BuildContext context) {
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return ListView.builder(
         itemBuilder: appStatsListViewBuilder, itemCount: monitoredApps.length);
   }
@@ -28,23 +29,19 @@ class AppStatsState extends State<AppStats> {
   }
 
   openRemoveDialog(int index) {
-    var colorScheme = Theme.of(context).colorScheme;
-
-    return AlertDialog(
-      title: Text(
-          "Vuoi rimuovere l'app ${monitoredApps[index].appName} dal monitoraggio?"),
-      actions: [
-        TextButton(
-            style: ButtonStyle(
-                backgroundColor: getErrorBackground(context),
-                foregroundColor: getErrorForeground(context)),
-            onPressed: () => removeMonitoredApp(index),
-            child: const Text("Si")),
-        TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text("No"))
-      ],
-    );
+    showDialog(
+        context: context,
+        builder: (builder) => AlertDialog(
+              title: Text(
+                  "Vuoi rimuovere l'app ${monitoredApps[index].appName} dal monitoraggio?"),
+              actions: [
+                ConfirmButtonWithCallback(
+                    voidCallback: () => removeMonitoredApp(index)),
+                const SizedBox(width: 50),
+                CancelButton(context: context)
+              ],
+              actionsAlignment: MainAxisAlignment.center,
+            ));
   }
 
   addMonitoredApp(Application application) {
@@ -57,5 +54,6 @@ class AppStatsState extends State<AppStats> {
     setState(() {
       monitoredApps.removeAt(index);
     });
+    Navigator.of(context).pop();
   }
 }
