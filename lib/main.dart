@@ -97,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _openMonitorNewApp(BuildContext context) async {
     final List<Application> appList = await DeviceApps.getInstalledApplications(
-        includeAppIcons: true); // todo non funziona
+        includeAppIcons: true);
     appList.sort(appNameComparator); // todo non mi piace
     if (context.mounted) {
       // todo capire xk è una bad practice
