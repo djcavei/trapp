@@ -96,7 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _openMonitorNewApp(BuildContext context) {
-    // todo capire xk è una bad practice
     Navigator.push(
         context,
         MaterialPageRoute(
