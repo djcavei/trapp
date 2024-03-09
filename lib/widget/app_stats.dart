@@ -2,6 +2,7 @@ import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:trapp/constants.dart';
 import 'package:trapp/functions/functions.dart';
+import 'package:trapp/model/usage_info_with_app_name.dart';
 
 import '../common/buttons.dart';
 
@@ -13,7 +14,7 @@ class AppStats extends StatefulWidget {
 }
 
 class AppStatsState extends State<AppStats> {
-  final List<Application> monitoredApps = [];
+  final List<UsageInfoWithAppName> monitoredApps = [];
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +45,9 @@ class AppStatsState extends State<AppStats> {
             ));
   }
 
-  addMonitoredApp(Application application) {
+  addMonitoredApp(UsageInfoWithAppName usageInfoWithAppName) {
     setState(() {
-      monitoredApps.add(application);
+      monitoredApps.add(usageInfoWithAppName);
     });
   }
 

@@ -95,23 +95,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _openMonitorNewApp(BuildContext context) async {
-    final List<Application> appList = await DeviceApps.getInstalledApplications(
-        includeAppIcons: true);
-    appList.sort(appNameComparator); // todo non mi piace
-    if (context.mounted) {
-      // todo capire xk è una bad practice
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => AddNewApp(
-                  key: UniqueKey(),
-                  appList: appList,
-                  addNewAppCallback: (app) {
-                    getAppStatsWidgetState().addMonitoredApp(app);
-                    Navigator.pop(context);
-                  })));
-    }
+  void _openMonitorNewApp(BuildContext context) {
+    // todo capire xk è una bad practice
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddNewApp(
+                key: UniqueKey(),
+                addNewAppCallback: (app) {
+                  getAppStatsWidgetState().addMonitoredApp(app);
+                  Navigator.pop(context);
+                })));
   }
 
   AppStatsState getAppStatsWidgetState() {
@@ -120,7 +114,4 @@ class _MyHomePageState extends State<MyHomePage> {
         .currentState! as AppStatsState;
   }
 
-/*getAppRulesWidgetState() {
-    (_widgets.firstWhere((element) => element is AppRules).key as GlobalKey<AppRulesState>).currentState;
-  }*/
 }
