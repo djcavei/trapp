@@ -37,7 +37,7 @@ class AddNewAppState extends State<AddNewApp> {
       if (application != null) {
         usageInfoWithAppNameList.add(UsageInfoWithAppName(
             usageInfo: usageInfo,
-            appName: application!.appName,
+            appName: application.appName,
             icon: (application as ApplicationWithIcon).icon));
       }
     }
