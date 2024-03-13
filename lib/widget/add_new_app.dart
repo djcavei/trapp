@@ -20,23 +20,28 @@ class AddNewAppState extends State<AddNewApp> {
   @override
   void initState() {
     super.initState();
-    DateTime endDate = DateTime.now();
-    DateTime startDate = endDate.subtract(oneDay);
-    _usageInfoWithAppNameList =
-        UsageStats.queryUsageStats(startDate, endDate).then((usageInfos) {
-          List<UsageInfoWithAppName> usageInfoWithAppNameList = [];
-      bool includeAppIcon = true;
-      for (UsageInfo usageInfo in usageInfos) {
-        DeviceApps.getApp(usageInfo.packageName!, includeAppIcon)
-            .then((application) {
-          usageInfoWithAppNameList.add(UsageInfoWithAppName(
-              usageInfo: usageInfo,
-              appName: application!.appName,
-              icon: (application as ApplicationWithIcon).icon));
-        });
+    UsageStats.grantUsagePermission(); // TODO cosa fa?
+    _usageInfoWithAppNameList = _getUsageInfoWithAppName();
+  }
+
+  Future<List<UsageInfoWithAppName>> _getUsageInfoWithAppName() async {
+    final DateTime endDate = DateTime.now();
+    final DateTime startDate = endDate.subtract(oneDay);
+    final List<UsageInfo> usageInfos =
+        await UsageStats.queryUsageStats(startDate, endDate);
+    List<UsageInfoWithAppName> usageInfoWithAppNameList = [];
+    bool includeAppIcon = true;
+    for (UsageInfo usageInfo in usageInfos) {
+      Application? application =
+          await DeviceApps.getApp(usageInfo.packageName!, includeAppIcon);
+      if (application != null) {
+        usageInfoWithAppNameList.add(UsageInfoWithAppName(
+            usageInfo: usageInfo,
+            appName: application!.appName,
+            icon: (application as ApplicationWithIcon).icon));
       }
-      return usageInfoWithAppNameList;
-    });
+    }
+    return usageInfoWithAppNameList;
   }
 
   @override
@@ -78,6 +83,9 @@ class AddNewAppState extends State<AddNewApp> {
             } else {
               return const Center(
                   child: Column(children: [
+                SizedBox(
+                  height: 50,
+                ),
                 SizedBox(
                   width: 60,
                   height: 60,
