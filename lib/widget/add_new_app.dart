@@ -76,7 +76,7 @@ class AddNewAppState extends State<AddNewApp> {
                   size: 60,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 16),
+                  padding: EdgeInsets.only(top: 16),
                   child: Text('Errore'),
                 )
               ]));
