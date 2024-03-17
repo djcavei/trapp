@@ -1,13 +1,11 @@
-import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:trapp/constants.dart';
 import 'package:trapp/widget/app_rules.dart';
 import 'package:trapp/widget/app_stats.dart';
 import 'package:trapp/widget/bottom_buttons.dart';
 import 'package:trapp/widget/add_new_app.dart';
-
-import 'functions/functions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,10 +22,11 @@ class MyApp extends StatelessWidget {
       title: 'Trapp',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
-            backgroundColor: Colors.white70,
+            backgroundColor: Colors.blueGrey.shade300,
             primarySwatch: Colors.orange,
             accentColor: Colors.lime,
             errorColor: Colors.red),
+        textTheme: GoogleFonts.titilliumWebTextTheme(),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Trapp home page'),
@@ -54,11 +53,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context)
-        .colorScheme; // todo capisci diff tra const e final in flutter
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.secondary,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .secondary,
         title: Text(widget.title),
         elevation: appBarElevation,
         shadowColor: colorScheme.secondary,
@@ -99,17 +102,20 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => AddNewApp(
-                key: UniqueKey(),
-                addNewAppCallback: (app) {
-                  getAppStatsWidgetState().addMonitoredApp(app);
-                  Navigator.pop(context);
-                })));
+            builder: (context) =>
+                AddNewApp(
+                    key: UniqueKey(),
+                    addNewAppCallback: (app) {
+                      getAppStatsWidgetState().addMonitoredApp(app);
+                      Navigator.pop(context);
+                    })));
   }
 
   AppStatsState getAppStatsWidgetState() {
-    return (_widgets.firstWhere((element) => element is AppStats).key
-            as GlobalKey)
+    return (_widgets
+        .firstWhere((element) => element is AppStats)
+        .key
+    as GlobalKey)
         .currentState! as AppStatsState;
   }
 

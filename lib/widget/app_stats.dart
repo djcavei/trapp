@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:trapp/constants.dart';
 import 'package:trapp/functions/functions.dart';
 import 'package:trapp/model/usage_info_with_app_name.dart';
+import 'package:trapp/utils/date_utils.dart';
 
 import '../common/buttons.dart';
 
@@ -24,7 +25,9 @@ class AppStatsState extends State<AppStats> {
 
   ListTile appStatsListViewBuilder(BuildContext context, int index) {
     return ListTile(
-      title: Text(monitoredApps[index].appName),
+      leading: const Icon(Icons.adb_sharp),
+      title: Text(monitoredApps[index].appName!, style: defaultListTileTextStyle),
+      subtitle: Text(getDurationStringFromMillis(monitoredApps[index].usageInfo.totalTimeInForeground)),
       onTap: () => openRemoveDialog(index),
     );
   }
@@ -57,4 +60,13 @@ class AppStatsState extends State<AppStats> {
     });
     Navigator.of(context).pop();
   }
+
+  String getDurationStringFromMillis(String? totalTimeInForeground) {
+    final List<int> hoursMinutesSeconds = hoursMinutesSecondsFromMillis(totalTimeInForeground);
+    final int hours = hoursMinutesSeconds[0];
+    final int minutes = hoursMinutesSeconds[1];
+    final int seconds = hoursMinutesSeconds[2];
+    return "${hours}h ${minutes}m ${seconds}s";
+  }
+
 }
