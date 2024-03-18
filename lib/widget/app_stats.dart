@@ -2,7 +2,7 @@ import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:trapp/constants.dart';
 import 'package:trapp/functions/functions.dart';
-import 'package:trapp/model/usage_info_with_app_name.dart';
+import 'package:trapp/model/custom_usage_info.dart';
 import 'package:trapp/utils/date_utils.dart';
 
 import '../common/buttons.dart';
@@ -15,7 +15,7 @@ class AppStats extends StatefulWidget {
 }
 
 class AppStatsState extends State<AppStats> {
-  final List<UsageInfoWithAppName> monitoredApps = [];
+  final List<CustomUsageInfo> monitoredApps = [];
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +26,8 @@ class AppStatsState extends State<AppStats> {
   ListTile appStatsListViewBuilder(BuildContext context, int index) {
     return ListTile(
       leading: const Icon(Icons.adb_sharp),
-      title: Text(monitoredApps[index].appName!, style: defaultListTileTextStyle),
-      subtitle: Text(getDurationStringFromMillis(monitoredApps[index].usageInfo.totalTimeInForeground)),
+      title: Text(monitoredApps[index].appName, style: defaultListTileTextStyle),
+      subtitle: Text(getDurationStringFromMillis(monitoredApps[index].totalTimeInForeground)),
       onTap: () => openRemoveDialog(index),
     );
   }
@@ -48,7 +48,7 @@ class AppStatsState extends State<AppStats> {
             ));
   }
 
-  addMonitoredApp(UsageInfoWithAppName usageInfoWithAppName) {
+  addMonitoredApp(CustomUsageInfo usageInfoWithAppName) {
     setState(() {
       monitoredApps.add(usageInfoWithAppName);
     });

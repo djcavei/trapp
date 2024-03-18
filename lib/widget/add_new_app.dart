@@ -1,14 +1,16 @@
+import 'dart:collection';
+
 import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:trapp/constants.dart';
 import 'package:usage_stats/usage_stats.dart';
-import 'package:trapp/model/usage_info_with_app_name.dart';
+import 'package:trapp/model/custom_usage_info.dart';
 
 import '../common/error_screen.dart';
 import '../common/loading_screen.dart';
 
 class AddNewApp extends StatefulWidget {
-  final Function(UsageInfoWithAppName) addNewAppCallback;
+  final Function(CustomUsageInfo) addNewAppCallback;
 
   const AddNewApp({super.key, required this.addNewAppCallback});
 
@@ -18,7 +20,7 @@ class AddNewApp extends StatefulWidget {
 
 class AddNewAppState extends State<AddNewApp> {
   final String title = "Monitora nuova app";
-  late final Future<List<UsageInfoWithAppName>> _usageInfoWithAppNameList;
+  late final Future<List<CustomUsageInfo>> _usageInfoWithAppNameList;
 
   @override
   void initState() {
@@ -27,28 +29,37 @@ class AddNewAppState extends State<AddNewApp> {
     _usageInfoWithAppNameList = _getUsageInfoWithAppName();
   }
 
-  Future<List<UsageInfoWithAppName>> _getUsageInfoWithAppName() async {
+  Future<List<CustomUsageInfo>> _getUsageInfoWithAppName() async {
     final DateTime endDate = DateTime.now();
     final DateTime startDate = endDate.subtract(oneDay);
     final List<UsageInfo> usageInfos = await UsageStats.queryUsageStats(
         startDate,
-        endDate); // todo ricorda di capire xk tra i tanti package alcuni hanno piu tempo altri zero
-    List<UsageInfoWithAppNameBuilder> usageInfoBuilderList =
-        usageInfos.map((ui) => UsageInfoWithAppNameBuilder().setUsageInfo(ui)).toSet().toList();
-    bool includeAppIcon = true;
-    final List<UsageInfoWithAppName> usageInfoWithAppNameList = [];
-    for (UsageInfoWithAppNameBuilder usageInfoBuilder in usageInfoBuilderList) {
-      Application? application = await DeviceApps.getApp(
-          usageInfoBuilder.usageInfo.packageName!, includeAppIcon);
-      if (application != null) {
-        usageInfoWithAppNameList.add(UsageInfoWithAppName(
-            usageInfo: usageInfoBuilder.usageInfo,
-            appName: application.appName,
-            icon: (application as ApplicationWithIcon).icon));
+        endDate);
+    
+    Map<String, CustomUsageInfoBuilder> packageNameCustomUsageInfoBuilderMap = HashMap();
+    
+    for (UsageInfo ui in usageInfos) {
+      packageNameCustomUsageInfoBuilderMap
+          .putIfAbsent(ui.packageName!,
+              () => CustomUsageInfoBuilder(ui.packageName!, int.parse(ui.totalTimeInForeground!), int.parse(ui.lastTimeUsed!)))
+          .updateStats(ui);
+    }
+    
+    final List<CustomUsageInfo> customUsageInfoList = [];
+    const bool includeAppIcon = true;
+
+    for(var mapEntry in packageNameCustomUsageInfoBuilderMap.entries) {
+      var application = await DeviceApps.getApp(mapEntry.key, includeAppIcon);
+      if(application != null) {
+        mapEntry.value.setAppName(application.appName);
+        mapEntry.value.setIcon((application as ApplicationWithIcon).icon);
+        customUsageInfoList.add(mapEntry.value.build());
       }
     }
-    usageInfoWithAppNameList.sort((a, b) => a.appName.toUpperCase().compareTo(b.appName.toUpperCase()));
-    return usageInfoWithAppNameList;
+
+    customUsageInfoList.sort((a, b) => a.appName.toUpperCase().compareTo(b.appName.toUpperCase()));
+    return customUsageInfoList;
+
   }
 
   @override
@@ -76,13 +87,13 @@ class AddNewAppState extends State<AddNewApp> {
   }
 
   ListView _getApplicationListView(
-      AsyncSnapshot<List<UsageInfoWithAppName>> snapshot) {
+      AsyncSnapshot<List<CustomUsageInfo>> snapshot) {
     return ListView.builder(
       itemCount: snapshot.data!.length,
       itemBuilder: (context, idx) {
         return ListTile(
           leading: const Icon(Icons.adb_sharp), // todo le icone
-          title: Text(snapshot.data![idx].appName!,
+          title: Text(snapshot.data![idx].appName,
               style: defaultListTileTextStyle),
           onTap: () => widget.addNewAppCallback(snapshot.data![idx]),
         );
