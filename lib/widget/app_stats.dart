@@ -27,7 +27,7 @@ class AppStatsState extends State<AppStats> {
     return ListTile(
       leading: const Icon(Icons.adb_sharp),
       title: Text(monitoredApps[index].appName, style: defaultListTileTextStyle),
-      subtitle: Text(getDurationStringFromMillis(monitoredApps[index].totalTimeInForeground)),
+      subtitle: Text(getDurationStringFromMillis(monitoredApps[index].totalTimeInForeground) + "\n" + getLastTimestampOfForeground(monitoredApps[index].lastTimeUsed)),
       onTap: () => openRemoveDialog(index),
     );
   }
@@ -67,6 +67,10 @@ class AppStatsState extends State<AppStats> {
     final int minutes = hoursMinutesSeconds[1];
     final int seconds = hoursMinutesSeconds[2];
     return "${hours}h ${minutes}m ${seconds}s";
+  }
+
+  String getLastTimestampOfForeground(String lastTimeUsed) {
+    return "Applicazione aperta l'ultima volta ${DateTime.fromMillisecondsSinceEpoch(int.parse(lastTimeUsed))}";
   }
 
 }
