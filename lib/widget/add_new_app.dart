@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
+import 'package:trapp/common/default_list_tile_divider.dart';
 import 'package:trapp/constants.dart';
 import 'package:usage_stats/usage_stats.dart';
 import 'package:trapp/model/custom_usage_info.dart';
@@ -88,7 +89,10 @@ class AddNewAppState extends State<AddNewApp> {
 
   ListView _getApplicationListView(
       AsyncSnapshot<List<CustomUsageInfo>> snapshot) {
-    return ListView.builder(
+    return ListView.separated(
+      separatorBuilder: (context, idx) {
+        return const DefaultListTileDivider();
+      },
       itemCount: snapshot.data!.length,
       itemBuilder: (context, idx) {
         return ListTile(

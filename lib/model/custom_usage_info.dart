@@ -5,8 +5,8 @@ import 'package:usage_stats/usage_stats.dart';
 
 class CustomUsageInfo {
   final String packageName;
-  final String totalTimeInForeground;
-  final String lastTimeUsed;
+  final int totalTimeInForeground;
+  final int lastTimeUsed;
   final String appName;
   final Uint8List icon;
 
@@ -21,8 +21,8 @@ class CustomUsageInfo {
 
 class CustomUsageInfoBuilder {
   final String packageName;
-  late num totalTimeInForeground;
-  late num lastTimeUsed;
+  late int totalTimeInForeground;
+  late int lastTimeUsed;
   late String appName;
   late Uint8List icon;
   
@@ -41,7 +41,7 @@ class CustomUsageInfoBuilder {
   }
   
   CustomUsageInfo build() {
-    return CustomUsageInfo(packageName: packageName, totalTimeInForeground: "$totalTimeInForeground", lastTimeUsed: "$lastTimeUsed", appName: appName, icon: icon);
+    return CustomUsageInfo(packageName: packageName, totalTimeInForeground: totalTimeInForeground, lastTimeUsed: lastTimeUsed, appName: appName, icon: icon);
   }
 
 }
