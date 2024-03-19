@@ -19,6 +19,12 @@ class AppStatsState extends State<AppStats> {
   final List<CustomUsageInfo> monitoredApps = [];
 
   @override
+  void initState() {
+    super.initState();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ListView.separated(
         separatorBuilder: (context, idx) {
